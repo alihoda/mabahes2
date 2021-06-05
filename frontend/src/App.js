@@ -1,16 +1,17 @@
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import HomeScreen from "./screens/HomeScreen";
 
 function App() {
     return (
         <Router>
             <Header />
             <main>
-                <Container>
-                    <h1>Hello</h1>
+                <Container fluid>
+                    <Route path="/" component={HomeScreen} exact />
                 </Container>
             </main>
             <Footer />

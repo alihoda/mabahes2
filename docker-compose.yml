@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+    db:
+        restart: always
+        image: postgres:12.0-alpine
+        container_name: postgres #you can change this
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASS=postgres
+            - POSTGRES_DB=ecommerce
+            - POSTGRES_PORT=5432
+        ports:
+            - "5432:5432"
+        volumes:
+            - db:/var/lib/postgresql/data/
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadmin #you can change this
+        depends_on:
+            - db
+        ports:
+            - "5051:80"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: pgadmin@pgadmin.org
+            PGADMIN_DEFAULT_PASSWORD: root
+        restart: always
+
+volumes:
+    db:

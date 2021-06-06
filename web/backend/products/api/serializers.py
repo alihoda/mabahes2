@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.utils.timesince import timesince
 
-from .models import Product, Tag
+from products.models import Product, Tag
 
 
 class TagSerializer(serializers.ModelSerializer):

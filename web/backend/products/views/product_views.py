@@ -2,8 +2,9 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
+from products.api.permissions import IsProductOwnerOrReadOnly
+from products.api.serializers import ProductSerializer
 from products.models import Product, Tag
-from products.serializers import ProductSerializer
 
 
 class ProductListView(generics.ListCreateAPIView):
@@ -38,6 +39,7 @@ class ProductListView(generics.ListCreateAPIView):
         return Response(serializer.data)
 
 
-class ProductView(generics.RetrieveAPIView):
+class ProductView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsProductOwnerOrReadOnly)

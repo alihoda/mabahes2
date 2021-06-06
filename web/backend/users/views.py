@@ -57,7 +57,7 @@ class UserRegister(APIView):
 
     def post(self, request, format='json'):
 
-        first_name, last_name, username, email, password = request.data.values()
+        first_name, last_name, username, password, email = request.data.values()
         user = User.objects.create(
             username=username,
             first_name=first_name,

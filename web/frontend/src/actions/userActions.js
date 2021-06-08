@@ -15,7 +15,7 @@ export const login = (username, password) => async (dispatch) => {
     };
     // Send post request and give data
     const { data } = await axios.post(
-      "/api/users/login/",
+      "/api/login",
       {
         username: username,
         password: password,
@@ -33,8 +33,7 @@ export const login = (username, password) => async (dispatch) => {
     // Dispatch the type to USER_LOGIN_FAIL if an error occurred
     dispatch({
       type: consts.USER_LOGIN_FAIL,
-      payload:
-        error.response && error.response.data.message ? error.response.data.detail : error.message,
+      payload: error.response ? error.response.data.message : error.response.data.detail,
     });
   }
 };

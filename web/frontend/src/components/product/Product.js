@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card, Image, Item, Label } from "semantic-ui-react";
+import { Card, Image } from "semantic-ui-react";
 import Tag from "../Tag";
 
 function Product({ product }) {

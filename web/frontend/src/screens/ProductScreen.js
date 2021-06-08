@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Segment, Label, Item, Divider } from "semantic-ui-react";
+import { Segment, Item, Divider } from "semantic-ui-react";
 
 import { productDetail } from "../actions/productActions";
 import Tag from "../components/Tag";

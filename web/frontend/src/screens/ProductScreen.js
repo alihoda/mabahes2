@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Segment, Label, Item, Divider } from "semantic-ui-react";
 
 import { productDetail } from "../actions/productActions";
+import Tag from "../components/Tag";
 
 function ProductScreen({ match }) {
   const dispatch = useDispatch();
@@ -32,19 +33,7 @@ function ProductScreen({ match }) {
 
               <Item.Description>{product.description}</Item.Description>
               <Divider />
-              <Item.Extra>
-                {product.tags.map((tag) => (
-                  <Label
-                    key={tag.id}
-                    as={Link}
-                    to={`/tag/${tag.id}`}
-                    style={{ marginBottom: "0.5em" }}
-                    color="teal"
-                  >
-                    {tag.name}
-                  </Label>
-                ))}
-              </Item.Extra>
+              <Tag product={product} />
             </Item.Content>
           </Item>
         </Segment>

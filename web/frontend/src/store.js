@@ -11,6 +11,7 @@ const reducer = combineReducers({
   productDetails: productRed.productDetailReducer,
   // Auth reducer
   userLogin: userRed.userLoginReducer,
+  userRegister: userRed.userRegisterReducer,
 });
 
 // Get userInfo from local storage

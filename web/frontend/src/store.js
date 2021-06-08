@@ -8,7 +8,7 @@ import * as userRed from "./reducers/userReducers";
 const reducer = combineReducers({
   // Product reducers
   productList: productRed.productListReducer,
-  productDetail: productRed.productDetailReducer,
+  productDetails: productRed.productDetailReducer,
   // Auth reducer
   userLogin: userRed.userLoginReducer,
 });

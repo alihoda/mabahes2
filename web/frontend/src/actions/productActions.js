@@ -2,7 +2,7 @@ import axios from "axios";
 
 import * as consts from "../constants/productConstants";
 
-export const listProducts = () => async (dispatch) => {
+export const listProduct = () => async (dispatch) => {
   try {
     dispatch({ type: consts.PRODUCT_LIST_REQUEST });
 
@@ -23,17 +23,17 @@ export const listProducts = () => async (dispatch) => {
 
 export const productDetail = (id) => async (dispatch) => {
   try {
-    dispatch({ type: PRODUCT_DETAIL_REQUEST });
+    dispatch({ type: consts.PRODUCT_DETAIL_REQUEST });
 
     const { data } = await axios.get(`/api/product/${id}`);
 
     dispatch({
-      type: PRODUCT_DETAIL_SUCCESS,
+      type: consts.PRODUCT_DETAIL_SUCCESS,
       payload: data,
     });
   } catch (error) {
     dispatch({
-      type: PRODUCT_DETAIL_FAIL,
+      type: consts.PRODUCT_DETAIL_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.detail : error.message,
     });

@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { Grid, Segment, Image, Card, Label } from "semantic-ui-react";
+import { Segment, Label, Item, Divider } from "semantic-ui-react";
 
 import { productDetail } from "../actions/productActions";
 
-function ProductScreen({ match, history }) {
+function ProductScreen({ match }) {
   const dispatch = useDispatch();
-  const productDetails = useSelector((state) => state.productDetail);
-  const { loading, error, product } = productDetails;
+  const productDetails = useSelector((state) => state.productDetails);
+  const { product } = productDetails;
 
   useEffect(() => {
     dispatch(productDetail(match.params.id));
@@ -16,34 +16,39 @@ function ProductScreen({ match, history }) {
 
   return (
     <div>
-      <Segment>
-        <Grid divided>
-          <Grid.Column width={7}>
-            <Image src={product.image} />
-          </Grid.Column>
+      {JSON.stringify(product) === "{}" ? (
+        <Segment loading />
+      ) : (
+        <Segment padded>
+          <Item>
+            <Item.Image src={product.image} />
 
-          <Grid.Column width={9}>
-            <Card>
-              <Card.Meta floated="right">{product.createdAt}</Card.Meta>
-              <Card.Header>{product.name}</Card.Header>
+            <Item.Content>
+              <Item.Header as="h2">{product.title}</Item.Header>
 
-              <Card.Meta as={Link} to={`/users/${product.user.id}`}>
+              <Item.Meta as={Link} to={`/user/${product.user.id}`} style={{ color: "gray" }}>
                 {product.user.name}
-              </Card.Meta>
+              </Item.Meta>
 
-              <Card.Description>{product.description}</Card.Description>
-
-              <Card.Content extra>
+              <Item.Description>{product.description}</Item.Description>
+              <Divider />
+              <Item.Extra>
                 {product.tags.map((tag) => (
-                  <Label as={Link} to={`/tags/${tag.id}`} style={{ marginBottom: "0.5em" }}>
+                  <Label
+                    key={tag.id}
+                    as={Link}
+                    to={`/tag/${tag.id}`}
+                    style={{ marginBottom: "0.5em" }}
+                    color="teal"
+                  >
                     {tag.name}
                   </Label>
                 ))}
-              </Card.Content>
-            </Card>
-          </Grid.Column>
-        </Grid>
-      </Segment>
+              </Item.Extra>
+            </Item.Content>
+          </Item>
+        </Segment>
+      )}
     </div>
   );
 }

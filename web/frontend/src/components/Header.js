@@ -24,16 +24,17 @@ function Header() {
         {userInfo ? (
           <Menu.Item>
             <Button.Group>
-              <Button primary icon labelPosition="left" as={Link} to={"/profile"}>
-                <Icon name="user" />
-                Profile
+              {/* User profile button */}
+              <Button primary animated="fade" as={Link} to={`/user/${userInfo.user.id}`}>
+                <Button.Content visible>Profile</Button.Content>
+                <Button.Content hidden>{userInfo.user.name}</Button.Content>
               </Button>
-
-              <Button.Or />
-
-              <Button color="red" icon labelPosition="right" onClick={logoutHandler}>
-                <Icon name="power off" />
-                Logout
+              {/* Logout button */}
+              <Button animated="fade" color="purple" onClick={logoutHandler}>
+                <Button.Content hidden>Logout</Button.Content>
+                <Button.Content visible>
+                  <Icon name="power off" />
+                </Button.Content>
               </Button>
             </Button.Group>
           </Menu.Item>

@@ -5,6 +5,7 @@ import { Segment, Form, Button, Grid, Message as SemMessage } from "semantic-ui-
 
 import { login } from "../../actions/userActions";
 import Message from "../../components/Message";
+import { USER_LOGIN_RESET } from "../../constants/userConstants";
 
 function LoginScreen({ location, history }) {
   const [username, setUsername] = useState("");
@@ -20,6 +21,8 @@ function LoginScreen({ location, history }) {
   useEffect(() => {
     if (userInfo) {
       history.push(redirect);
+    } else {
+      dispatch({ type: USER_LOGIN_RESET });
     }
   }, [history, userInfo, redirect]);
 

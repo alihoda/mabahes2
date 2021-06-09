@@ -13,8 +13,8 @@ function RegisterScreen({ location, history }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [description, setDescription] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [avatar, setAvatar] = useState({ file: null, fileName: "" });
   // State for messages
   const [message, setMessage] = useState("");
@@ -25,6 +25,7 @@ function RegisterScreen({ location, history }) {
   // Give register info from state
   const userRegister = useSelector((state) => state.userRegister);
   const { error, userInfo } = userRegister;
+
   // If userInfo is available then redirect user
   useEffect(() => {
     if (userInfo) {
@@ -114,20 +115,13 @@ function RegisterScreen({ location, history }) {
               />
 
               <Form.Input
-                label={{
+                action={{
                   color: "teal",
+                  labelPosition: "left",
                   icon: "file",
                   content: "Avatar",
                   htmlFor: "upload",
-                  labelPosition: "left",
                 }}
-                // action={{
-                //   color: "teal",
-                //   labelPosition: "left",
-                //   icon: "file",
-                //   content: "Avatar",
-                //   htmlFor: "upload",
-                // }}
                 readOnly
                 placeholder="Upload your avatar"
                 defaultValue={avatar.fileName}

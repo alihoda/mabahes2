@@ -15,6 +15,9 @@ export const userLoginReducer = (state = {}, action) => {
     case consts.USER_LOGOUT:
       return {};
 
+    case consts.USER_LOGIN_RESET:
+      return {};
+
     default:
       return state;
   }
@@ -33,6 +36,9 @@ export const userRegisterReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
 
     case consts.USER_LOGOUT:
+      return {};
+
+    case consts.USER_REGISTER_RESET:
       return {};
 
     default:

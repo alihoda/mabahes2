@@ -45,3 +45,23 @@ export const userRegisterReducer = (state = {}, action) => {
       return state;
   }
 };
+
+// Profile reducer
+export const userDetailReducer = (state = { user: {} }, action) => {
+  switch (action.type) {
+    case consts.USER_DETAIL_REQUEST:
+      return { ...state, loading: true };
+
+    case consts.USER_DETAIL_SUCCESS:
+      return { loading: false, user: action.payload };
+
+    case consts.USER_DETAIL_FAIL:
+      return { loading: false, error: action.payload };
+
+    case consts.USER_LOGOUT:
+      return {};
+
+    default:
+      return state;
+  }
+};

@@ -77,3 +77,34 @@ export const register = (regData) => async (dispatch) => {
     });
   }
 };
+
+// User profile action
+export const getUserDetail = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: consts.USER_DETAIL_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+    const { data } = await axios.get(`/api/user/${id}`, config);
+
+    dispatch({
+      type: consts.USER_DETAIL_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: consts.USER_DETAIL_FAIL,
+      payload: error.response ? error.response.data.message : error.response.data.detail,
+    });
+  }
+};

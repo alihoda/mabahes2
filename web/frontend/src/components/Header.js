@@ -20,14 +20,15 @@ function Header() {
       <Menu.Item header as={Link} to="/">
         Home
       </Menu.Item>
+
       <Menu.Menu position="right">
         {userInfo ? (
           <Menu.Item>
             <Button.Group>
               {/* User profile button */}
               <Button primary animated="fade" as={Link} to={`/user/${userInfo.user.id}`}>
-                <Button.Content visible>Profile</Button.Content>
-                <Button.Content hidden>{userInfo.user.name}</Button.Content>
+                <Button.Content visible>{userInfo.user.name}</Button.Content>
+                <Button.Content hidden>Profile</Button.Content>
               </Button>
               {/* Logout button */}
               <Button animated="fade" color="purple" onClick={logoutHandler}>

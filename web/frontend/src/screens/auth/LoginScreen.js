@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Segment, Form, Button, Grid, Message as SemMessage } from "semantic-ui-react";
+import { Segment, Form, Button, Grid, Message as SemMessage, Icon } from "semantic-ui-react";
 
 import { login } from "../../actions/userActions";
 import Message from "../../components/Message";
 import { USER_LOGIN_RESET } from "../../constants/userConstants";
 
 function LoginScreen({ location, history }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [state, setState] = useState({ username: "", password: "" });
 
   const dispatch = useDispatch();
 
-  const redirect = location.search ? location.search.split("=")[1] : "/";
+  const { error, userInfo } = useSelector((state) => state.userLogin);
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { error, userInfo } = userLogin;
+  const redirect = location.search ? location.search.split("=")[1] : "/";
 
   useEffect(() => {
     if (userInfo) {
@@ -24,16 +22,16 @@ function LoginScreen({ location, history }) {
     } else {
       dispatch({ type: USER_LOGIN_RESET });
     }
-  }, [history, userInfo, redirect]);
+  }, [history, userInfo, redirect, dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(username, password));
+    dispatch(login(state));
   };
 
   return (
     <div>
-      <Grid textAlign="center" style={{ height: "80vh" }} verticalAlign="middle">
+      <Grid centered style={{ height: "80vh" }} verticalAlign="middle">
         <Grid.Column style={{ maxWidth: 450 }}>
           <h3>Login</h3>
 
@@ -46,7 +44,7 @@ function LoginScreen({ location, history }) {
                 icon="user"
                 iconPosition="left"
                 placeholder="Username"
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setState({ ...state, username: e.target.value })}
               />
               <Form.Input
                 fluid
@@ -54,7 +52,7 @@ function LoginScreen({ location, history }) {
                 iconPosition="left"
                 placeholder="Password"
                 type="password"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setState({ ...state, password: e.target.value })}
               />
               <Button primary type="submit" fluid size="large">
                 Login
@@ -62,7 +60,8 @@ function LoginScreen({ location, history }) {
             </Form>
           </Segment>
 
-          <SemMessage>
+          <SemMessage warning>
+            <Icon name="help" />
             New to us?{" "}
             <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>Sign Up</Link>
           </SemMessage>

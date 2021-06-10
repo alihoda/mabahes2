@@ -2,10 +2,9 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Item, Segment, Message as SemMessage, Divider, Button, Icon } from "semantic-ui-react";
+import { Item, Segment, Message, Divider, Button, Icon } from "semantic-ui-react";
 
 import Tag from "../components/Tag";
-import Message from "../components/Message";
 import { getUserDetail } from "../actions/userActions";
 
 function ProfileScreen({ match }) {
@@ -30,7 +29,7 @@ function ProfileScreen({ match }) {
    * @returns <Item.Extra>
    */
   const renderUserButtons = () => {
-    if (userInfo && userInfo.user.id === user.id) {
+    if (userInfo && userInfo.id === user.id) {
       return (
         <Item.Extra>
           <Divider />
@@ -60,7 +59,7 @@ function ProfileScreen({ match }) {
         // Show loading spinner until data is ready
         <Segment loading />
       ) : error ? (
-        <Message header="Something Has Occurred" content={error} />
+        <Message error header="Something Has Occurred" content={error} />
       ) : (
         <div>
           {/* User info */}
@@ -89,7 +88,7 @@ function ProfileScreen({ match }) {
             <Segment.Group>
               {!user.products.length ? (
                 // Show a message that the user has no product
-                <SemMessage info header="No Product" content="There is no product for this user" />
+                <Message info header="No Product" content="There is no product for this user" />
               ) : (
                 // List all the user's products
                 <Segment>

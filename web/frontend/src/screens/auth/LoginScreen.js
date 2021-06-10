@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Segment, Form, Button, Grid, Message as SemMessage, Icon } from "semantic-ui-react";
+import { Segment, Form, Button, Grid, Message, Icon } from "semantic-ui-react";
 
 import { login } from "../../actions/userActions";
-import Message from "../../components/Message";
 import { USER_LOGIN_RESET } from "../../constants/userConstants";
 
 function LoginScreen({ location, history }) {
@@ -35,7 +34,7 @@ function LoginScreen({ location, history }) {
         <Grid.Column style={{ maxWidth: 450 }}>
           <h3>Login</h3>
 
-          {error && <Message header={"Authentication Failed"} content={error} />}
+          {error && <Message error header={"Authentication Failed"} list={error} />}
 
           <Segment stacked>
             <Form size="large" onSubmit={submitHandler}>
@@ -60,11 +59,11 @@ function LoginScreen({ location, history }) {
             </Form>
           </Segment>
 
-          <SemMessage warning>
+          <Message warning>
             <Icon name="help" />
             New to us?{" "}
             <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>Sign Up</Link>
-          </SemMessage>
+          </Message>
         </Grid.Column>
       </Grid>
     </div>

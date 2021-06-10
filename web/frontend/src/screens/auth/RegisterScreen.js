@@ -2,65 +2,54 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Button, Form, Grid, Message as SemMessage, Segment } from "semantic-ui-react";
+import { Button, Form, Grid, Icon, Message, Segment } from "semantic-ui-react";
 
-import Message from "../../components/Message";
 import { register } from "../../actions/userActions";
+import { USER_REGISTER_RESET } from "../../constants/userConstants";
 
 function RegisterScreen({ location, history }) {
-  // States for registration
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [description, setDescription] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [avatar, setAvatar] = useState({ file: null, fileName: "" });
-  // State for messages
-  const [message, setMessage] = useState("");
+  const [state, setState] = useState({
+    name: "",
+    email: "",
+    username: "",
+    password: "",
+    password_confirmation: "",
+    description: "",
+    thumbnail: null,
+  });
 
   const dispatch = useDispatch();
+  // Give register info from state
+  const { error, userInfo } = useSelector((state) => state.userRegister);
   // Check if there is redirect in url
   const redirect = location.search ? location.search.split("=")[1] : "/";
-  // Give register info from state
-  const userRegister = useSelector((state) => state.userRegister);
-  const { error, userInfo } = userRegister;
 
-  // If userInfo is available then redirect user
   useEffect(() => {
     if (userInfo) {
       history.push(redirect);
+    } else {
+      dispatch({ type: USER_REGISTER_RESET });
     }
-  }, [history, userInfo, redirect]);
-  // Submit handler
+  }, [dispatch, history, userInfo, redirect]);
+
+  /**
+   * Form submit handler
+   *
+   * It take form inputs and dispatch register user action
+   * @param {e} e action
+   */
   const submitHandler = (e) => {
     e.preventDefault();
-
-    // Check if password is equal to confirmPassword
-    if (password !== confirmPassword || !password) {
-      setMessage("Password does not matched");
-    } else {
-      // If no problem was found then call register function
-      dispatch(
-        register({
-          name: name,
-          username: username,
-          email: email,
-          password: password,
-          description: description,
-          thumbnail: avatar.file,
-        })
-      );
-    }
+    dispatch(register(state));
   };
+
   return (
     <div>
-      <Grid textAlign="center" style={{ height: "80vh" }} verticalAlign="middle">
+      <Grid centered style={{ height: "80vh" }} verticalAlign="middle">
         <Grid.Column style={{ maxWidth: 600 }}>
           <h3>Sign Up</h3>
 
-          {message && <Message header={"Registration Failed"} content={message} />}
-          {error && <Message header={"Registration Failed"} content={error} />}
+          {error && <Message error header={"Registration Failed"} list={error} />}
 
           <Segment stacked>
             <Form size="large" onSubmit={submitHandler}>
@@ -68,7 +57,7 @@ function RegisterScreen({ location, history }) {
                 fluid
                 label="Name"
                 placeholder="Name"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => setState({ ...state, name: e.target.value })}
               />
 
               <Form.Group widths="equal">
@@ -77,7 +66,7 @@ function RegisterScreen({ location, history }) {
                   label="Username"
                   placeholder="Username"
                   type="username"
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setState({ ...state, username: e.target.value })}
                 />
 
                 <Form.Input
@@ -85,7 +74,7 @@ function RegisterScreen({ location, history }) {
                   label="Email"
                   placeholder="Email"
                   type="email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setState({ ...state, email: e.target.value })}
                 />
               </Form.Group>
 
@@ -95,7 +84,7 @@ function RegisterScreen({ location, history }) {
                   label="Password"
                   placeholder="Password"
                   type="password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => setState({ ...state, password: e.target.value })}
                 />
 
                 <Form.Input
@@ -103,38 +92,23 @@ function RegisterScreen({ location, history }) {
                   label="Confirm Password"
                   placeholder="Confirm Password"
                   type="password"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => setState({ ...state, password_confirmation: e.target.value })}
                 />
               </Form.Group>
 
               <Form.TextArea
                 label="Description"
                 placeholder="Write about yourself ..."
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={(e) => setState({ ...state, description: e.target.value })}
               />
 
-              <Form.Input
-                action={{
-                  color: "teal",
-                  labelPosition: "left",
-                  icon: "file",
-                  content: "Avatar",
-                  htmlFor: "upload",
-                }}
-                readOnly
-                placeholder="Upload your avatar"
-                defaultValue={avatar.fileName}
-              />
-
-              <input
-                id="upload"
-                type="file"
-                hidden
-                onChange={(e) =>
-                  setAvatar({ file: e.target.files[0], fileName: e.target.files[0].name })
-                }
-              />
+              <Form.Field>
+                <input
+                  id="upload"
+                  type="file"
+                  onChange={(e) => setState({ ...state, thumbnail: e.target.files[0] })}
+                />
+              </Form.Field>
 
               <Button primary type="submit" fluid size="large">
                 Sign Up
@@ -142,10 +116,11 @@ function RegisterScreen({ location, history }) {
             </Form>
           </Segment>
 
-          <SemMessage>
+          <Message warning>
+            <Icon name="help" />
             Have account?{" "}
             <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>Login</Link>
-          </SemMessage>
+          </Message>
         </Grid.Column>
       </Grid>
     </div>

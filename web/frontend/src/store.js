@@ -14,6 +14,7 @@ const reducer = combineReducers({
   userRegister: userRed.userRegisterReducer,
   // User reducer
   userDetail: userRed.userDetailReducer,
+  userUpdateProfile: userRed.userUpdateProfileReducer,
 });
 
 // Get userInfo from local storage

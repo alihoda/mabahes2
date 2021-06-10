@@ -18,26 +18,35 @@ export const login = (formData) => async (dispatch) => {
     // Dispatch the type to USER_LOGIN_SUCCESS
     dispatch({
       type: consts.USER_LOGIN_SUCCESS,
-      payload: data,
+      message: data.message,
+      user: data.user,
     });
 
     // Store userInfo in local storage
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    localStorage.setItem("userInfo", JSON.stringify(data.user));
+    // Store token in local storage
+    localStorage.setItem("token", data.token);
   } catch (error) {
-    // Dispatch the type to USER_LOGIN_FAIL if an error occurred
+    const errors = [].concat.apply([], Object.values(error.response.data.errors));
+
     dispatch({
       type: consts.USER_LOGIN_FAIL,
-      payload: error.response ? error.response.data.message : error.response.data.detail,
+      payload: error.response && errors,
     });
   }
 };
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
+  localStorage.removeItem("token");
   dispatch({ type: consts.USER_LOGOUT });
 };
 
-// User register action
+/**
+ * Handler register action.
+ * @param regData
+ * @returns
+ */
 export const register = (regData) => async (dispatch) => {
   try {
     dispatch({
@@ -64,10 +73,11 @@ export const register = (regData) => async (dispatch) => {
 
     localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (error) {
-    console.log(error);
+    const errors = [].concat.apply([], Object.values(error.response.data.errors));
+
     dispatch({
       type: consts.USER_REGISTER_FAIL,
-      payload: error.response ? error.response.data.message : error.response.data.detail,
+      payload: error.response && errors,
     });
   }
 };
@@ -95,6 +105,44 @@ export const getUserDetail = (id) => async (dispatch) => {
     dispatch({
       type: consts.USER_DETAIL_FAIL,
       payload: error.response ? error.response.data.message : error.response.data.detail,
+    });
+  }
+};
+
+export const updateUserProfile = (user) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: consts.USER_UPDATE_PROFILE_REQUEST,
+    });
+
+    // Give token from local storage
+    const token = localStorage.getItem("token");
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/api/user/${user.id}`, user, config);
+    dispatch({
+      type: consts.USER_UPDATE_PROFILE_SUCCESS,
+      payload: data,
+    });
+
+    dispatch({
+      type: consts.USER_LOGIN_SUCCESS,
+      user: data.user,
+    });
+
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    const errors = [].concat.apply([], Object.values(error.response.data.errors));
+
+    dispatch({
+      type: consts.USER_UPDATE_PROFILE_FAIL,
+      payload: error.response && errors,
     });
   }
 };

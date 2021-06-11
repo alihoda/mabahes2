@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Header, Segment } from "semantic-ui-react";
 
-import Product from "../components/product/Product";
+import Product from "../components/Product";
 import { listProduct } from "../actions/productActions";
 
 function HomeScreen() {
@@ -22,13 +22,17 @@ function HomeScreen() {
         </Header>
       </Segment>
 
-      <Segment basic padded="very">
-        <Card.Group>
-          {products.map((product) => (
-            <Product key={product.id} product={product} />
-          ))}
-        </Card.Group>
-      </Segment>
+      {!products ? (
+        <Segment loading />
+      ) : (
+        <Segment basic padded="very">
+          <Card.Group>
+            {products.map((product) => (
+              <Product key={product.id} product={product} />
+            ))}
+          </Card.Group>
+        </Segment>
+      )}
     </div>
   );
 }

@@ -1,21 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Item, Segment, Message, Divider, Button, Icon } from "semantic-ui-react";
+import { Item, Segment, Message, Divider, Button } from "semantic-ui-react";
 
-import Tag from "../components/Tag";
+import UserProduct from "../components/UserProduct";
 import { getUserDetail } from "../actions/userActions";
+import { PRODUCT_DELETE_RESET } from "../constants/productConstants";
 
-function ProfileScreen({ match }) {
+function ProfileScreen({ match, history }) {
   const dispatch = useDispatch();
 
   const { userInfo } = useSelector((state) => state.userLogin);
   const { error, user } = useSelector((state) => state.userDetail);
+  const { error: delError, success } = useSelector((state) => state.productDelete);
 
   useEffect(() => {
     dispatch(getUserDetail(match.params.id));
-  }, [dispatch, match]);
+
+    if (success) {
+      dispatch({ type: PRODUCT_DELETE_RESET });
+      history.push(`/user/${match.params.id}`);
+    }
+  }, [dispatch, match, success]);
 
   /**
    * Handler for delete button
@@ -33,21 +40,22 @@ function ProfileScreen({ match }) {
       return (
         <Item.Extra>
           <Divider />
-          <Button.Group>
-            <Button animated="vertical" secondary as={Link} to={`/user-update/${user.id}`}>
-              <Button.Content hidden>Edit</Button.Content>
-              <Button.Content visible>
-                <Icon name="edit outline" />
-              </Button.Content>
-            </Button>
+          <Button
+            secondary
+            content="Edit Profile"
+            icon="edit outline"
+            labelPosition="left"
+            as={Link}
+            to={`/user-update/${user.id}`}
+          />
 
-            <Button animated="vertical" color="red" onClick={profileDeleteHandler}>
-              <Button.Content hidden>Delete</Button.Content>
-              <Button.Content visible>
-                <Icon name="trash" />
-              </Button.Content>
-            </Button>
-          </Button.Group>
+          <Button
+            color="red"
+            content="Delete Profile"
+            icon="trash"
+            labelPosition="left"
+            onClick={profileDeleteHandler}
+          />
         </Item.Extra>
       );
     }
@@ -66,7 +74,15 @@ function ProfileScreen({ match }) {
           <Segment>
             <Item.Group>
               <Item>
-                <Item.Image rounded size="medium" src={user.avatar && user.avatar.url} />
+                <Item.Image
+                  rounded
+                  size="medium"
+                  src={
+                    user.avatar
+                      ? user.avatar.url
+                      : "https://react.semantic-ui.com/images/avatar/large/matthew.png"
+                  }
+                />
 
                 <Item.Content>
                   <Item.Header as="h2" content={user.name} />
@@ -81,35 +97,17 @@ function ProfileScreen({ match }) {
           </Segment>
 
           {/* user products */}
-          <Segment.Group>
-            <Segment>
-              <h3>Products</h3>
-            </Segment>
-            <Segment.Group>
-              {!user.products.length ? (
-                // Show a message that the user has no product
-                <Message info header="No Product" content="There is no product for this user" />
-              ) : (
-                // List all the user's products
-                <Segment>
-                  <Item.Group link>
-                    {user.products.map((product) => (
-                      <Item key={product.id} as={Link} to={`/product/${product.id}`}>
-                        <Item.Image size="small" rounded src={product.image} />
-                        <Item.Content>
-                          <Item.Header content={product.title} />
-                          <Item.Meta content={product.createdAt} />
-                          <Item.Description content={product.description} />
-                          <Divider />
-                          <Tag product={product} />
-                        </Item.Content>
-                      </Item>
-                    ))}
-                  </Item.Group>
-                </Segment>
-              )}
-            </Segment.Group>
-          </Segment.Group>
+          <Segment padded>
+            <h2>Products</h2>
+            {delError && <Message error header="Delete Product Failed" list={delError} />}
+
+            {!user.products.length ? (
+              // Show a message that the user has no product
+              <Message info header="No Product" content="There is no product for this user" />
+            ) : (
+              <UserProduct user={user} userInfo={userInfo} />
+            )}
+          </Segment>
         </div>
       )}
     </div>

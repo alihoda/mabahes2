@@ -9,6 +9,8 @@ const reducer = combineReducers({
   // Product reducers
   productList: productRed.productListReducer,
   productDetails: productRed.productDetailReducer,
+  productUpdate: productRed.productUpdateReducer,
+  productDelete: productRed.productDeleteReducer,
   // Auth reducer
   userLogin: userRed.userLoginReducer,
   userRegister: userRed.userRegisterReducer,

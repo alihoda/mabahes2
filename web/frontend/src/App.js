@@ -9,6 +9,8 @@ import RegisterScreen from "./screens/auth/RegisterScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import ProfileUpdateScreen from "./screens/ProfileUpdateScreen";
 import ProductUpdateScreen from "./screens/product/ProductUpdateScreen";
+import TagScreen from "./screens/TagScreen";
+import TagDetail from "./screens/TagDetail";
 
 function App() {
   return (
@@ -24,8 +26,11 @@ function App() {
           <Route path="/user/:id" component={ProfileScreen} />
           <Route path="/user-update/:id" component={ProfileUpdateScreen} />
 
-          <Route path="/login" component={LoginScreen} />
-          <Route path="/register" component={RegisterScreen} />
+          <Route path="/login" component={LoginScreen} exact />
+          <Route path="/register" component={RegisterScreen} exact />
+
+          <Route path="/tags" component={TagScreen} />
+          <Route path="/tag/:id" component={TagDetail} />
         </Container>
       </main>
     </Router>

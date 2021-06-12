@@ -4,6 +4,7 @@ import thunk from "redux-thunk";
 
 import * as productRed from "./reducers/productReducers";
 import * as userRed from "./reducers/userReducers";
+import * as tagRed from "./reducers/tagReducers";
 
 const reducer = combineReducers({
   // Product reducers
@@ -17,6 +18,9 @@ const reducer = combineReducers({
   // User reducer
   userDetail: userRed.userDetailReducer,
   userUpdateProfile: userRed.userUpdateProfileReducer,
+  // Tag reducer
+  tagList: tagRed.tagListReducer,
+  tagDetail: tagRed.tagDetailReducer,
 });
 
 // Get userInfo from local storage

@@ -16,7 +16,7 @@ function HomeScreen() {
 
   return (
     <div>
-      <Segment placeholder>
+      <Segment placeholder raised>
         <Header textAlign="center" as="h1">
           Here Is Where You Introduce Your Projects
         </Header>

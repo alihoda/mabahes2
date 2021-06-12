@@ -5,7 +5,7 @@ import Tag from "./Tag";
 
 function Product({ product, fluid }) {
   return (
-    <Card link fluid={fluid} as={Link} to={`/product/${product.id}`}>
+    <Card link fluid={fluid} as={Link} to={`/product/${product.id}`} color="blue">
       <Image
         src={
           product.image

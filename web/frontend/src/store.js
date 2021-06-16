@@ -18,6 +18,7 @@ const reducer = combineReducers({
   // User reducer
   userDetail: userRed.userDetailReducer,
   userUpdateProfile: userRed.userUpdateProfileReducer,
+  userDeleteProfile: userRed.userDeleteProfileReducer,
   // Tag reducer
   tagList: tagRed.tagListReducer,
   tagDetail: tagRed.tagDetailReducer,

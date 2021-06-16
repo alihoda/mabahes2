@@ -81,3 +81,22 @@ export const userUpdateProfileReducer = (state = {}, action) => {
       return state;
   }
 };
+
+export const userDeleteProfileReducer = (state = {}, action) => {
+  switch (action.type) {
+    case consts.USER_DELETE_PROFILE_REQUEST:
+      return { loading: true };
+
+    case consts.USER_DELETE_PROFILE_SUCCESS:
+      return { loading: false, success: true };
+
+    case consts.USER_DELETE_PROFILE_FAIL:
+      return { loading: false, error: action.payload };
+
+    case consts.USER_DELETE_PROFILE_RESET:
+      return {};
+
+    default:
+      return state;
+  }
+};

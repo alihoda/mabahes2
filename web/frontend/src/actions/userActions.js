@@ -131,3 +131,28 @@ export const updateUserProfile = (formData) => async (dispatch) => {
     errors(dispatch, consts.USER_UPDATE_PROFILE_FAIL, error);
   }
 };
+
+export const userDeleteProfile = (id) => async (dispatch) => {
+  try {
+    // dispatch user_delete_request
+    dispatch({ type: consts.USER_DELETE_PROFILE_REQUEST });
+    // get token
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    // send request to back
+    const { data } = await axios.delete(`/api/user/${id}`, config);
+    // dispatch user_delete_success
+    dispatch({ type: consts.USER_DELETE_PROFILE_SUCCESS });
+    // dispatch user_detail_reset and user_logout
+    dispatch({ type: consts.USER_DETAIL_RESET });
+    // call logout action
+    dispatch(logout());
+  } catch (error) {
+    errors(dispatch, consts.USER_DELETE_PROFILE_FAIL, error);
+  }
+};

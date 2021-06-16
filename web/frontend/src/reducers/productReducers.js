@@ -25,6 +25,10 @@ export const productDetailReducer = (state = { product: null }, action) => {
 
     case consts.PRODUCT_DETAIL_FAIL:
       return { loading: false, error: action.payload };
+
+    case consts.PRODUCT_DETAIL_RESET:
+      return {};
+
     default:
       return state;
   }
@@ -36,7 +40,7 @@ export const productUpdateReducer = (state = {}, action) => {
       return { loading: true };
 
     case consts.PRODUCT_UPDATE_SUCCESS:
-      return { loading: false, success: true };
+      return { loading: false, success: true, product: action.payload };
 
     case consts.PRODUCT_UPDATE_FAIL:
       return { loading: false, error: action.payload };

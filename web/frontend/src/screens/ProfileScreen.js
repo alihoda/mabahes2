@@ -2,33 +2,65 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Item, Segment, Message, Divider, Button } from "semantic-ui-react";
+import { Button, Divider, Header, Icon, Item, Message, Modal, Segment } from "semantic-ui-react";
 
 import UserProduct from "../components/UserProduct";
-import { getUserDetail } from "../actions/userActions";
+import { getUserDetail, userDeleteProfile } from "../actions/userActions";
 import { PRODUCT_DELETE_RESET } from "../constants/productConstants";
+import { USER_DELETE_PROFILE_RESET } from "../constants/userConstants";
 
 function ProfileScreen({ match, history }) {
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(false);
+
   const { userInfo } = useSelector((state) => state.userLogin);
   const { error, user } = useSelector((state) => state.userDetail);
-  const { error: delError, success } = useSelector((state) => state.productDelete);
+  const { error: productDelError, success: productSuccess } = useSelector(
+    (state) => state.productDelete
+  );
+  const { error: userDelError, success: userSuccess } = useSelector(
+    (state) => state.userDeleteProfile
+  );
 
   useEffect(() => {
     dispatch(getUserDetail(match.params.id));
 
-    if (success) {
+    if (productSuccess) {
       dispatch({ type: PRODUCT_DELETE_RESET });
       history.push(`/user/${match.params.id}`);
     }
-  }, [dispatch, match, success]);
+    if (userSuccess) {
+      dispatch({ type: USER_DELETE_PROFILE_RESET });
+      history.push("/");
+    }
+  }, [dispatch, history, match, productSuccess, userSuccess]);
+
+  const modalRender = () => {
+    return (
+      <Modal size="small" open={open} onClose={() => setOpen(false)} onOpen={() => setOpen(true)}>
+        <Header icon="warning sign" content="Are You Sure?" />
+        <Modal.Content>
+          <p>The user and all its products will be deleted. Sure about that?</p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button color="red" onClick={() => setOpen(false)}>
+            <Icon name="remove" /> No
+          </Button>
+          <Button color="green" onClick={profileDeleteHandler}>
+            <Icon name="checkmark" /> Yes
+          </Button>
+        </Modal.Actions>
+      </Modal>
+    );
+  };
 
   /**
    * Handler for delete button
    */
   const profileDeleteHandler = () => {
-    console.log("delete submitted");
+    setOpen(false);
+    dispatch(userDeleteProfile(userInfo.id));
   };
 
   /**
@@ -54,8 +86,9 @@ function ProfileScreen({ match, history }) {
             content="Delete Profile"
             icon="trash"
             labelPosition="left"
-            onClick={profileDeleteHandler}
+            onClick={() => setOpen(true)}
           />
+          {modalRender()}
         </Item.Extra>
       );
     }
@@ -70,6 +103,8 @@ function ProfileScreen({ match, history }) {
         <Message error header="Something Has Occurred" content={error} />
       ) : (
         <div>
+          {userDelError && <Message error header="Delete User Failed" />}
+
           {/* User info */}
           <Segment>
             <Item.Group>
@@ -99,7 +134,9 @@ function ProfileScreen({ match, history }) {
           {/* user products */}
           <Segment padded>
             <h2>Products</h2>
-            {delError && <Message error header="Delete Product Failed" list={delError} />}
+            {productDelError && (
+              <Message error header="Delete Product Failed" list={productDelError} />
+            )}
 
             {!user.products.length ? (
               // Show a message that the user has no product

@@ -1,12 +1,20 @@
 import axios from "axios";
+import { PRODUCT_DETAIL_RESET } from "../constants/productConstants";
 
 import * as consts from "../constants/userConstants";
 
+const errors = (dispatch, type, error) => {
+  dispatch({
+    type: type,
+    payload: error.response.data.errors
+      ? [].concat.apply([], Object.values(error.response.data.errors))
+      : error.response.data.message.split(),
+  });
+};
+
 export const login = (formData) => async (dispatch) => {
   try {
-    dispatch({
-      type: consts.USER_LOGIN_REQUEST,
-    });
+    dispatch({ type: consts.USER_LOGIN_REQUEST });
     // Create header to the request
     const config = {
       headers: {
@@ -27,12 +35,7 @@ export const login = (formData) => async (dispatch) => {
     // Store token in local storage
     localStorage.setItem("token", data.token);
   } catch (error) {
-    const errors = [].concat.apply([], Object.values(error.response.data.errors));
-
-    dispatch({
-      type: consts.USER_LOGIN_FAIL,
-      payload: error.response && errors,
-    });
+    errors(dispatch, consts.USER_LOGIN_FAIL, error);
   }
 };
 
@@ -49,9 +52,7 @@ export const logout = () => (dispatch) => {
  */
 export const register = (regData) => async (dispatch) => {
   try {
-    dispatch({
-      type: consts.USER_REGISTER_REQUEST,
-    });
+    dispatch({ type: consts.USER_REGISTER_REQUEST });
 
     const config = {
       headers: {
@@ -66,28 +67,18 @@ export const register = (regData) => async (dispatch) => {
       payload: data,
     });
 
-    dispatch({
-      type: consts.USER_LOGIN_SUCCESS,
-      payload: data,
-    });
+    dispatch(login({ username: regData.get("username"), password: regData.get("password") }));
 
     localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (error) {
-    const errors = [].concat.apply([], Object.values(error.response.data.errors));
-
-    dispatch({
-      type: consts.USER_REGISTER_FAIL,
-      payload: error.response && errors,
-    });
+    errors(dispatch, consts.USER_REGISTER_FAIL, error);
   }
 };
 
 // User profile action
 export const getUserDetail = (id) => async (dispatch) => {
   try {
-    dispatch({
-      type: consts.USER_DETAIL_REQUEST,
-    });
+    dispatch({ type: consts.USER_DETAIL_REQUEST });
 
     const config = {
       headers: {
@@ -97,19 +88,18 @@ export const getUserDetail = (id) => async (dispatch) => {
 
     const { data } = await axios.get(`/api/user/${id}`, config);
 
+    dispatch({ type: PRODUCT_DETAIL_RESET });
+
     dispatch({
       type: consts.USER_DETAIL_SUCCESS,
       payload: data,
     });
   } catch (error) {
-    dispatch({
-      type: consts.USER_DETAIL_FAIL,
-      payload: error.response ? error.response.data.message : error.response.data.detail,
-    });
+    errors(dispatch, consts.USER_DETAIL_FAIL, error);
   }
 };
 
-export const updateUserProfile = (user) => async (dispatch, getState) => {
+export const updateUserProfile = (formData) => async (dispatch) => {
   try {
     dispatch({
       type: consts.USER_UPDATE_PROFILE_REQUEST,
@@ -125,7 +115,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.put(`/api/user/${user.id}`, user, config);
+    const { data } = await axios.post(`/api/user/${formData.get("id")}`, formData, config);
     dispatch({
       type: consts.USER_UPDATE_PROFILE_SUCCESS,
       payload: data,
@@ -138,11 +128,6 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
 
     localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (error) {
-    const errors = [].concat.apply([], Object.values(error.response.data.errors));
-
-    dispatch({
-      type: consts.USER_UPDATE_PROFILE_FAIL,
-      payload: error.response && errors,
-    });
+    errors(dispatch, consts.USER_UPDATE_PROFILE_FAIL, error);
   }
 };

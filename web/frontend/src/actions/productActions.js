@@ -2,6 +2,15 @@ import axios from "axios";
 
 import * as consts from "../constants/productConstants";
 
+const errors = (dispatch, type, error) => {
+  dispatch({
+    type: type,
+    payload: error.response.data.errors
+      ? [].concat.apply([], Object.values(error.response.data.errors))
+      : error.response.data.message.split(),
+  });
+};
+
 export const listProduct = () => async (dispatch) => {
   try {
     dispatch({ type: consts.PRODUCT_LIST_REQUEST });
@@ -13,11 +22,7 @@ export const listProduct = () => async (dispatch) => {
       payload: data,
     });
   } catch (error) {
-    dispatch({
-      type: consts.PRODUCT_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message ? error.response.data.detail : error.message,
-    });
+    errors(dispatch, consts.PRODUCT_LIST_FAIL, error);
   }
 };
 
@@ -32,11 +37,7 @@ export const productDetail = (id) => async (dispatch) => {
       payload: data,
     });
   } catch (error) {
-    dispatch({
-      type: consts.PRODUCT_DETAIL_FAIL,
-      payload:
-        error.response && error.response.data.message ? error.response.data.detail : error.message,
-    });
+    errors(dispatch, consts.PRODUCT_DETAIL_FAIL, error);
   }
 };
 
@@ -45,7 +46,6 @@ export const updateProduct = (formData, request) => async (dispatch) => {
     dispatch({
       type: consts.PRODUCT_UPDATE_REQUEST,
     });
-
     // Give token from local storage
     const token = localStorage.getItem("token");
 
@@ -55,19 +55,14 @@ export const updateProduct = (formData, request) => async (dispatch) => {
         Authorization: `Bearer ${token}`,
       },
     };
-
     const { data } =
       request === "CREATE"
         ? await axios.post("/api/product", formData, config)
-        : await axios.put(`/api/product/${formData.id}`, formData, config);
+        : await axios.post(`/api/product/${formData.get("id")}`, formData, config);
 
-    dispatch({ type: consts.PRODUCT_UPDATE_SUCCESS });
+    dispatch({ type: consts.PRODUCT_UPDATE_SUCCESS, payload: data.product });
   } catch (error) {
-    const errors = [].concat.apply([], Object.values(error.response.data.errors));
-    dispatch({
-      type: consts.PRODUCT_UPDATE_FAIL,
-      payload: errors,
-    });
+    errors(dispatch, consts.PRODUCT_UPDATE_FAIL, error);
   }
 };
 
@@ -92,10 +87,6 @@ export const deleteProduct = (id) => async (dispatch) => {
       message: data,
     });
   } catch (error) {
-    dispatch({
-      type: consts.PRODUCT_DELETE_FAIL,
-      payload:
-        error.response && error.response.data.message ? error.response.data.detail : error.message,
-    });
+    errors(dispatch, consts.PRODUCT_DELETE_FAIL, error);
   }
 };

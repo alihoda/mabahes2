@@ -8,7 +8,7 @@ export const getTagInfo = (request, id) => async (dispatch) => {
 
     const { data } =
       request === "LIST" ? await axios.get("/api/tag") : await axios.get(`/api/tag/${id}`);
-    console.log(id, data);
+
     dispatch({
       type: request === "LIST" ? consts.TAG_LIST_SUCCESS : consts.TAG_DETAIL_SUCCESS,
       payload: data,

@@ -15,12 +15,12 @@ function TagFeed({ tags }) {
             <Feed.Event
               image={
                 product.image
-                  ? product.image
+                  ? product.image.url
                   : "https://react.semantic-ui.com/images/avatar/small/elliot.jpg"
               }
               date={product.createdAt}
               summary={<Link to={`/product/${product.id}`}>{product.title}</Link>}
-              extraText="ut tellus elementum sagittis vitae"
+              extraText={product.description}
             />
           </Feed>
         ))}

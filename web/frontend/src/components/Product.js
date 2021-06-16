@@ -9,7 +9,7 @@ function Product({ product, fluid }) {
       <Image
         src={
           product.image
-            ? product.image
+            ? product.image.url
             : "https://cdn.dribbble.com/users/2564256/screenshots/15244258/media/324908e40f50ca98946aefeca70c6cfd.png?compress=1&resize=1200x900"
         }
         alt={product.name}

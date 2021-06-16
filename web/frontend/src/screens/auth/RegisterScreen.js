@@ -40,7 +40,11 @@ function RegisterScreen({ location, history }) {
    */
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(register(state));
+    const formData = new FormData();
+    // Assign state to formData
+    Object.keys(state).map((key) => formData.append(key, state[key]));
+    // Dispatch register
+    dispatch(register(formData));
   };
 
   return (
@@ -57,7 +61,7 @@ function RegisterScreen({ location, history }) {
                 fluid
                 label="Name"
                 placeholder="Name"
-                onChange={(e) => setState({ ...state, name: e.target.value })}
+                onChange={(e) => setState({ ...state, name: e.target.value.trim() })}
               />
 
               <Form.Group widths="equal">
@@ -66,7 +70,7 @@ function RegisterScreen({ location, history }) {
                   label="Username"
                   placeholder="Username"
                   type="username"
-                  onChange={(e) => setState({ ...state, username: e.target.value })}
+                  onChange={(e) => setState({ ...state, username: e.target.value.trim() })}
                 />
 
                 <Form.Input
@@ -74,7 +78,7 @@ function RegisterScreen({ location, history }) {
                   label="Email"
                   placeholder="Email"
                   type="email"
-                  onChange={(e) => setState({ ...state, email: e.target.value })}
+                  onChange={(e) => setState({ ...state, email: e.target.value.trim() })}
                 />
               </Form.Group>
 
@@ -84,7 +88,7 @@ function RegisterScreen({ location, history }) {
                   label="Password"
                   placeholder="Password"
                   type="password"
-                  onChange={(e) => setState({ ...state, password: e.target.value })}
+                  onChange={(e) => setState({ ...state, password: e.target.value.trim() })}
                 />
 
                 <Form.Input
@@ -92,14 +96,16 @@ function RegisterScreen({ location, history }) {
                   label="Confirm Password"
                   placeholder="Confirm Password"
                   type="password"
-                  onChange={(e) => setState({ ...state, password_confirmation: e.target.value })}
+                  onChange={(e) =>
+                    setState({ ...state, password_confirmation: e.target.value.trim() })
+                  }
                 />
               </Form.Group>
 
               <Form.TextArea
                 label="Description"
                 placeholder="Write about yourself ..."
-                onChange={(e) => setState({ ...state, description: e.target.value })}
+                onChange={(e) => setState({ ...state, description: e.target.value.trim() })}
               />
 
               <Form.Field>

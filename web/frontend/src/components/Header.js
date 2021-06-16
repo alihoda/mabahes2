@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Icon, Menu } from "semantic-ui-react";
+import { Menu } from "semantic-ui-react";
 
 import { logout } from "../actions/userActions";
 
@@ -20,7 +20,7 @@ function Header() {
   const handleItemClick = (e, { name }) => setActiveItem(name);
 
   return (
-    <Menu size="large" color="teal">
+    <Menu size="huge" color="blue">
       <Menu.Item
         icon="home"
         name="home"
@@ -56,12 +56,12 @@ function Header() {
             active={activeItem === `${userInfo.name}`}
             onClick={handleItemClick}
           />
-          <Menu.Item icon="power off" name="logout" onClick={logoutHandler} />
+          <Menu.Item icon="sign-out" name="logout" onClick={logoutHandler} />
         </Menu.Menu>
       ) : (
         <Menu.Menu position="right">
           <Menu.Item
-            icon="user"
+            icon="sign-in"
             name="login"
             as={Link}
             to="/login"

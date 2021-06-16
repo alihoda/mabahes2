@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button, Card, Divider, Icon } from "semantic-ui-react";
+import { Button, Card, Divider, Header, Icon, Modal } from "semantic-ui-react";
 
 import Tag from "../components/Tag";
 import { deleteProduct } from "../actions/productActions";
@@ -41,9 +41,11 @@ function UserProduct({ user, userInfo }) {
       {user.products.map((product) => (
         <Card
           key={product.id}
+          link
+          color="blue"
           image={
             product.image
-              ? product.image
+              ? product.image.url
               : "https://cdn.dribbble.com/users/2564256/screenshots/15244258/media/324908e40f50ca98946aefeca70c6cfd.png?compress=1&resize=1200x900"
           }
           header={

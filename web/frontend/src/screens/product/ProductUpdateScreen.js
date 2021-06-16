@@ -7,13 +7,19 @@ import { PRODUCT_UPDATE_RESET } from "../../constants/productConstants";
 
 function ProductUpdateScreen({ history, match }) {
   const [message, setMessage] = useState(null);
-  const [data, setData] = useState(null);
+  const [form, setForm] = useState({
+    id: "",
+    title: "",
+    description: "",
+    tags: "",
+    thumbnail: null,
+  });
 
   const request = window.location.pathname === "/new-product" ? "CREATE" : "UPDATE";
 
   const dispatch = useDispatch();
   const { userInfo } = useSelector((data) => data.userLogin);
-  const { error, success } = useSelector((data) => data.productUpdate);
+  const { error, success, product } = useSelector((data) => data.productUpdate);
   const { product: productInfo } = useSelector((data) => data.productDetails);
 
   useEffect(() => {
@@ -26,35 +32,35 @@ function ProductUpdateScreen({ history, match }) {
       if (request === "UPDATE" && !productInfo) {
         dispatch(productDetail(match.params.id));
       } else if (request === "UPDATE" && productInfo) {
-        setData({
+        setForm({
           id: productInfo.id,
           title: productInfo.title,
           description: productInfo.description,
           tags: productInfo.tags.map((t) => t.name).toString(),
+          thumbnail: null,
         });
       }
     }
     // Redirect to user profile if update was successful
     if (success) {
+      history.push(`/product/${product.id}`);
       dispatch({ type: PRODUCT_UPDATE_RESET });
-      history.push(`/product/${match.params.id}`);
     }
-  }, [dispatch, success, userInfo, request, productInfo]);
+  }, [dispatch, history, success, userInfo, request, productInfo]);
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    dispatch(
-      updateProduct(
-        {
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          tags: createTagList(data.tags),
-        },
-        request
-      )
-    );
+    const formData = new FormData();
+    // Assign state to formData
+    Object.keys(form).map((key) => formData.append(key, form[key]));
+    // Slugify tags
+    formData.set("tags", JSON.stringify(createTagList(form.tags)));
+    if (request === "UPDATE") {
+      formData.append("_method", "PUT");
+    }
+
+    dispatch(updateProduct(formData, request));
   };
 
   /**
@@ -102,9 +108,9 @@ function ProductUpdateScreen({ history, match }) {
               <Form.Input
                 fluid
                 label="Title"
-                value={data && data.title}
+                value={form && form.title}
                 placeholder="Title"
-                onChange={(e) => setData({ ...data, title: e.target.value })}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
 
               <Form.Field>
@@ -112,24 +118,24 @@ function ProductUpdateScreen({ history, match }) {
                 <input
                   id="upload"
                   type="file"
-                  onChange={(e) => setData({ ...data, thumbnail: e.target.files[0] })}
+                  onChange={(e) => setForm({ ...form, thumbnail: e.target.files[0] })}
                 />
               </Form.Field>
             </Form.Group>
 
             <Form.TextArea
               label="Description"
-              value={data && data.description}
+              value={form && form.description}
               placeholder="Write about the product ..."
-              onChange={(e) => setData({ ...data, description: e.target.value })}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
             />
 
             <Form.Input
               fluid
               label="Tags"
-              value={data && data.tags}
+              value={form && form.tags}
               placeholder="Enter tags. Like django, web, shell, ..."
-              onChange={(e) => setData({ ...data, tags: e.target.value })}
+              onChange={(e) => setForm({ ...form, tags: e.target.value })}
             />
 
             <Button primary type="submit" fluid size="large">

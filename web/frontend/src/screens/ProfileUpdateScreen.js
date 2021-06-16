@@ -7,7 +7,7 @@ import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
 
 function ProfileUpdateScreen({ match, history }) {
   const [message, setMessage] = useState(null);
-  const [state, setState] = useState({
+  const [form, setForm] = useState({
     name: "",
     email: "",
     username: "",
@@ -27,18 +27,26 @@ function ProfileUpdateScreen({ match, history }) {
     } else if (!userInfo || user.id !== userInfo.id) {
       setMessage({ header: "Permission Denied", content: "You do not have the permission" });
     } else {
-      setState({ ...user });
+      setForm({ ...user });
     }
     // Redirect to user profile if update was successful
     if (success) {
       dispatch({ type: USER_UPDATE_PROFILE_RESET });
+      dispatch(getUserDetail(match.params.id));
       history.push(`/user/${user.id}`);
     }
   }, [dispatch, history, success, userInfo, user, match]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(updateUserProfile(state));
+
+    const formData = new FormData();
+    // Assign state to formData
+    Object.keys(form).map((key) => formData.append(key, form[key]));
+    // Add this because laravel doesn't get form with put request!!
+    formData.append("_method", "PUT");
+
+    dispatch(updateUserProfile(formData));
   };
 
   return (
@@ -60,8 +68,8 @@ function ProfileUpdateScreen({ match, history }) {
                     fluid
                     label="Name"
                     placeholder="Name"
-                    value={state.name}
-                    onChange={(e) => setState({ ...state, name: e.target.value })}
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
                   />
 
                   <Form.Input
@@ -69,8 +77,8 @@ function ProfileUpdateScreen({ match, history }) {
                     label="Username"
                     placeholder="Username"
                     type="username"
-                    value={state.username}
-                    onChange={(e) => setState({ ...state, username: e.target.value })}
+                    value={form.username}
+                    onChange={(e) => setForm({ ...form, username: e.target.value })}
                   />
                 </Form.Group>
 
@@ -80,8 +88,8 @@ function ProfileUpdateScreen({ match, history }) {
                     label="Email"
                     placeholder="Email"
                     type="email"
-                    value={state.email}
-                    onChange={(e) => setState({ ...state, email: e.target.value })}
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
                   />
 
                   <Form.Field>
@@ -89,7 +97,7 @@ function ProfileUpdateScreen({ match, history }) {
                     <input
                       id="upload"
                       type="file"
-                      onChange={(e) => setState({ ...state, thumbnail: e.target.files[0] })}
+                      onChange={(e) => setForm({ ...form, thumbnail: e.target.files[0] })}
                     />
                   </Form.Field>
                 </Form.Group>
@@ -97,8 +105,8 @@ function ProfileUpdateScreen({ match, history }) {
                 <Form.TextArea
                   label="Description"
                   placeholder="Write about yourself ..."
-                  value={state.description}
-                  onChange={(e) => setState({ ...state, description: e.target.value })}
+                  value={form.description}
+                  onChange={(e) => setForm({ ...form, description: e.target.value })}
                 />
 
                 <Button primary type="submit" fluid size="large">

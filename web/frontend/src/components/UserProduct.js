@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Button, Card, Divider, Header, Icon, Modal } from "semantic-ui-react";
+import { Button, Card, Divider, Icon } from "semantic-ui-react";
 
 import Tag from "../components/Tag";
 import { deleteProduct } from "../actions/productActions";

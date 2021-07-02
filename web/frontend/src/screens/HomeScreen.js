@@ -16,10 +16,19 @@ function HomeScreen() {
 
   return (
     <div>
-      <Segment placeholder raised>
-        <Header textAlign="center" as="h1">
-          Here Is Where You Introduce Your Projects
-        </Header>
+      <Segment vertical inverted style={{ minHeight: 600, padding: "1em 0em" }}>
+        <Header
+          as="h1"
+          textAlign="center"
+          content="Here Is Where You Introduce Your Projects"
+          inverted
+          style={{
+            fontSize: "4em",
+            fontWeight: "normal",
+            marginBottom: 0,
+            marginTop: "4em",
+          }}
+        />
       </Segment>
 
       {!products ? (

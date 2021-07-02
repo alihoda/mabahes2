@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Card, Header, Icon, Segment } from "semantic-ui-react";
+import { Card, Header, Segment } from "semantic-ui-react";
 
 import { getTagInfo } from "../actions/tagActions";
 import Product from "../components/Product";
@@ -17,11 +17,18 @@ function TagDetail({ match }) {
     <Segment loading />
   ) : (
     <div>
-      <Segment placeholder raised>
-        <Header icon>
-          <Icon name="tag" />
-          {tag.name}
-        </Header>
+      <Segment vertical style={{ minHeight: 300, padding: "1em 0em", margin: "1em 0em" }}>
+        <Header
+          as="h1"
+          textAlign="center"
+          content={tag.name}
+          style={{
+            fontSize: "4em",
+            fontWeight: "normal",
+            marginBottom: 0,
+            marginTop: "1.75em",
+          }}
+        />
       </Segment>
 
       <Segment padded basic>

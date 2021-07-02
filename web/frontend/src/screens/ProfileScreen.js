@@ -73,6 +73,7 @@ function ProfileScreen({ match, history }) {
         <Item.Extra>
           <Divider />
           <Button
+            inverted
             secondary
             content="Edit Profile"
             icon="edit outline"
@@ -82,6 +83,7 @@ function ProfileScreen({ match, history }) {
           />
 
           <Button
+            inverted
             color="red"
             content="Delete Profile"
             icon="trash"
@@ -98,7 +100,7 @@ function ProfileScreen({ match, history }) {
     <div>
       {!user ? (
         // Show loading spinner until data is ready
-        <Segment loading />
+        <Segment inverted loading />
       ) : error ? (
         <Message error header="Something Has Occurred" content={error} />
       ) : (
@@ -106,11 +108,11 @@ function ProfileScreen({ match, history }) {
           {userDelError && <Message error header="Delete User Failed" />}
 
           {/* User info */}
-          <Segment>
+          <Segment raised style={{ padding: "1em 0.5em", margin: "1em 0em" }}>
             <Item.Group>
               <Item>
                 <Item.Image
-                  rounded
+                  avatar
                   size="medium"
                   src={
                     user.avatar
@@ -119,7 +121,7 @@ function ProfileScreen({ match, history }) {
                   }
                 />
 
-                <Item.Content>
+                <Item.Content verticalAlign="middle">
                   <Item.Header as="h2" content={user.name} />
                   <Item.Meta content={`Username: ${user.username}`} />
                   <Item.Meta content={`Email: ${user.email}`} />
@@ -132,7 +134,7 @@ function ProfileScreen({ match, history }) {
           </Segment>
 
           {/* user products */}
-          <Segment padded>
+          <Segment padded vertical style={{ padding: "1em 0.5em" }}>
             <h2>Products</h2>
             {productDelError && (
               <Message error header="Delete Product Failed" list={productDelError} />

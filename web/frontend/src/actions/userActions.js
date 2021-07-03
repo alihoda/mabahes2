@@ -1,8 +1,14 @@
 import axios from "axios";
-import { PRODUCT_DETAIL_RESET } from "../constants/productConstants";
 
 import * as consts from "../constants/userConstants";
 
+/**
+ * Handle errors and convert them to list instead of string
+ *
+ * @param {dispatch} dispatch
+ * @param {constant} type The constant which show the request
+ * @param {string} error
+ */
 const errors = (dispatch, type, error) => {
   dispatch({
     type: type,
@@ -12,16 +18,20 @@ const errors = (dispatch, type, error) => {
   });
 };
 
+/**
+ * Handle user login
+ * @param {Object} formData User inputs for login
+ */
 export const login = (formData) => async (dispatch) => {
   try {
     dispatch({ type: consts.USER_LOGIN_REQUEST });
-    // Create header to the request
+    // Request header
     const config = {
       headers: {
         "Content-type": "application/json",
       },
     };
-    // Send post request and give data
+    // Send post request
     const { data } = await axios.post("/api/login", formData, config);
     // Dispatch the type to USER_LOGIN_SUCCESS
     dispatch({
@@ -39,6 +49,9 @@ export const login = (formData) => async (dispatch) => {
   }
 };
 
+/**
+ * Handle user logout
+ */
 export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
   localStorage.removeItem("token");
@@ -47,49 +60,47 @@ export const logout = () => (dispatch) => {
 
 /**
  * Handler register action.
- * @param regData
- * @returns
+ * @param {FormData} formData
  */
-export const register = (regData) => async (dispatch) => {
+export const register = (formData) => async (dispatch) => {
   try {
     dispatch({ type: consts.USER_REGISTER_REQUEST });
-
+    // Request header
     const config = {
       headers: {
         "Content-type": "application/json",
       },
     };
-
-    const { data } = await axios.post("/api/user", regData, config);
+    // Send post request
+    const { data } = await axios.post("/api/user", formData, config);
 
     dispatch({
       type: consts.USER_REGISTER_SUCCESS,
       payload: data,
     });
-
-    dispatch(login({ username: regData.get("username"), password: regData.get("password") }));
-
-    localStorage.setItem("userInfo", JSON.stringify(data));
+    // Login user
+    dispatch(login({ username: formData.get("username"), password: formData.get("password") }));
   } catch (error) {
     errors(dispatch, consts.USER_REGISTER_FAIL, error);
   }
 };
 
-// User profile action
+/**
+ * Get user detail
+ * @param {integer} id User id
+ */
 export const getUserDetail = (id) => async (dispatch) => {
   try {
     dispatch({ type: consts.USER_DETAIL_REQUEST });
-
+    // Request header
     const config = {
       headers: {
         "Content-type": "application/json",
       },
     };
-
+    // Send get request
     const { data } = await axios.get(`/api/user/${id}`, config);
-
-    dispatch({ type: PRODUCT_DETAIL_RESET });
-
+    // Update userDetails state
     dispatch({
       type: consts.USER_DETAIL_SUCCESS,
       payload: data,
@@ -99,6 +110,10 @@ export const getUserDetail = (id) => async (dispatch) => {
   }
 };
 
+/**
+ * Handle update user profile
+ * @param {FormData} formData Form inputs
+ */
 export const updateUserProfile = (formData) => async (dispatch) => {
   try {
     dispatch({
@@ -107,7 +122,7 @@ export const updateUserProfile = (formData) => async (dispatch) => {
 
     // Give token from local storage
     const token = localStorage.getItem("token");
-
+    // Request header
     const config = {
       headers: {
         "Content-type": "application/json",
@@ -116,41 +131,47 @@ export const updateUserProfile = (formData) => async (dispatch) => {
     };
 
     const { data } = await axios.post(`/api/user/${formData.get("id")}`, formData, config);
+
     dispatch({
       type: consts.USER_UPDATE_PROFILE_SUCCESS,
       payload: data,
     });
-
+    // Update userLogin state
     dispatch({
       type: consts.USER_LOGIN_SUCCESS,
       user: data.user,
     });
-
+    // Update userInfo in local storage
     localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (error) {
     errors(dispatch, consts.USER_UPDATE_PROFILE_FAIL, error);
   }
 };
 
+/**
+ * Handle delete user profile
+ * @param {integer} id User id
+ */
 export const userDeleteProfile = (id) => async (dispatch) => {
   try {
-    // dispatch user_delete_request
+    // Dispatch user_delete_request
     dispatch({ type: consts.USER_DELETE_PROFILE_REQUEST });
-    // get token
+    // Get token
     const token = localStorage.getItem("token");
+    // Request header
     const config = {
       headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     };
-    // send request to back
+    // Send delete request
     const { data } = await axios.delete(`/api/user/${id}`, config);
-    // dispatch user_delete_success
+    // Dispatch user_delete_success
     dispatch({ type: consts.USER_DELETE_PROFILE_SUCCESS });
-    // dispatch user_detail_reset and user_logout
+    // Reset userDetails state
     dispatch({ type: consts.USER_DETAIL_RESET });
-    // call logout action
+    // Logout user
     dispatch(logout());
   } catch (error) {
     errors(dispatch, consts.USER_DELETE_PROFILE_FAIL, error);

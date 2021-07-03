@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Segment, Form, Button, Grid, Message, Icon } from "semantic-ui-react";
 
@@ -7,15 +7,16 @@ import { login } from "../../actions/userActions";
 import { USER_LOGIN_RESET } from "../../constants/userConstants";
 
 function LoginScreen({ location, history }) {
-  const [state, setState] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({ username: "", password: "" });
 
   const dispatch = useDispatch();
-
+  // Get logged in user
   const { error, userInfo } = useSelector((state) => state.userLogin);
-
+  // Check if there was redirect param in url
   const redirect = location.search ? location.search.split("=")[1] : "/";
 
   useEffect(() => {
+    // If user is already logged in, redirect
     if (userInfo) {
       history.push(redirect);
     } else {
@@ -25,7 +26,7 @@ function LoginScreen({ location, history }) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(state));
+    dispatch(login(form));
   };
 
   return (
@@ -43,7 +44,7 @@ function LoginScreen({ location, history }) {
                 icon="user"
                 iconPosition="left"
                 placeholder="Username"
-                onChange={(e) => setState({ ...state, username: e.target.value })}
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
               />
               <Form.Input
                 fluid
@@ -51,7 +52,7 @@ function LoginScreen({ location, history }) {
                 iconPosition="left"
                 placeholder="Password"
                 type="password"
-                onChange={(e) => setState({ ...state, password: e.target.value })}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
               />
               <Button primary type="submit" fluid size="large">
                 Login

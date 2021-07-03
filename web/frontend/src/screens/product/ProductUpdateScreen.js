@@ -6,7 +6,9 @@ import { productDetail, updateProduct } from "../../actions/productActions";
 import { PRODUCT_UPDATE_RESET } from "../../constants/productConstants";
 
 function ProductUpdateScreen({ history, match }) {
+  // Message for authorization
   const [message, setMessage] = useState(null);
+  // Store form inputs
   const [form, setForm] = useState({
     id: "",
     title: "",
@@ -14,24 +16,30 @@ function ProductUpdateScreen({ history, match }) {
     tags: "",
     thumbnail: null,
   });
-
+  // Recognize type of request based on url
   const request = window.location.pathname === "/new-product" ? "CREATE" : "UPDATE";
 
   const dispatch = useDispatch();
+  // Get current logged in user from state
   const { userInfo } = useSelector((data) => data.userLogin);
-  const { error, success, product } = useSelector((data) => data.productUpdate);
+  // Get product detail to fill form inputs in UPDATE from state
   const { product: productInfo } = useSelector((data) => data.productDetails);
+  // Get product update result from state
+  const { error, success, product } = useSelector((data) => data.productUpdate);
 
   useEffect(() => {
+    // Check if user is logged in
     if (!userInfo) {
       setMessage({
         header: "Permission Denied",
         content: "You do not have the permission",
       });
     } else {
+      // Check if productInfo (from productDetail state) has value for UPDATE
       if (request === "UPDATE" && !productInfo) {
         dispatch(productDetail(match.params.id));
       } else if (request === "UPDATE" && productInfo) {
+        // Fill form state with product detail
         setForm({
           id: productInfo.id,
           title: productInfo.title,
@@ -56,10 +64,11 @@ function ProductUpdateScreen({ history, match }) {
     Object.keys(form).map((key) => formData.append(key, form[key]));
     // Slugify tags
     formData.set("tags", JSON.stringify(createTagList(form.tags)));
+    // Add this because laravel doesn't get form with put request!!
     if (request === "UPDATE") {
       formData.append("_method", "PUT");
     }
-
+    // Dispatch updateProduct action
     dispatch(updateProduct(formData, request));
   };
 

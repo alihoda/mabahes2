@@ -6,21 +6,24 @@ import { Menu, Segment } from "semantic-ui-react";
 import { logout } from "../actions/userActions";
 
 function Header() {
+  // For showing active link in navbar
   const [activeItem, setActiveItem] = useState("");
-
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  // Get current logged in user info from its state
+  const { userInfo } = useSelector((state) => state.userLogin);
 
   const dispatch = useDispatch();
 
+  // Change active link in navbar
+  const handleItemClick = (e, { name }) => setActiveItem(name);
+  /**
+   * dispatch user logout action
+   */
   const logoutHandler = () => {
     dispatch(logout());
   };
 
-  const handleItemClick = (e, { name }) => setActiveItem(name);
-
   return (
-    <Segment vertical inverted style={{ padding: "0.5em 0.5em" }}>
+    <Segment vertical inverted style={{ padding: "0.5em 0.5em", marginBottom: "1em" }}>
       <Menu pointing secondary inverted size="large">
         <Menu.Item
           icon="home"

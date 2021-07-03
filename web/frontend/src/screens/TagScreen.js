@@ -7,6 +7,7 @@ import TagFeed from "../components/TagFeed";
 
 function TagScreen() {
   const dispatch = useDispatch();
+
   const { tags } = useSelector((state) => state.tagList);
 
   useEffect(() => {

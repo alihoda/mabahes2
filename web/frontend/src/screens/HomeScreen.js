@@ -6,10 +6,11 @@ import Product from "../components/Product";
 import { listProduct } from "../actions/productActions";
 
 function HomeScreen() {
-  const dispatch = useDispatch();
-  const productList = useSelector((state) => state.productList);
-  const { products } = productList;
+  // Get all products from productList state
+  const { products } = useSelector((state) => state.productList);
 
+  const dispatch = useDispatch();
+  // Dispatch listProduct action to get all products
   useEffect(() => {
     dispatch(listProduct());
   }, [dispatch]);

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Form, Grid, Message, Segment } from "semantic-ui-react";
 
-import { getUserDetail, updateUserProfile } from "../actions/userActions";
 import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
+import { getUserDetail, updateUserProfile } from "../actions/userActions";
 
 function ProfileUpdateScreen({ match, history }) {
+  // Use for show message if user doesn't have the permission to access this page
   const [message, setMessage] = useState(null);
+  // State for storing form inputs
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -17,11 +19,12 @@ function ProfileUpdateScreen({ match, history }) {
 
   const dispatch = useDispatch();
 
+  const { user } = useSelector((state) => state.userDetail);
   const { userInfo } = useSelector((state) => state.userLogin);
   const { error, success } = useSelector((state) => state.userUpdateProfile);
-  const { user } = useSelector((state) => state.userDetail);
 
   useEffect(() => {
+    // Check if requested user's info is loaded
     if (!user) {
       dispatch(getUserDetail(match.params.id));
     } else if (!userInfo || user.id !== userInfo.id) {
@@ -38,14 +41,12 @@ function ProfileUpdateScreen({ match, history }) {
   }, [dispatch, history, success, userInfo, user, match]);
 
   const submitHandler = (e) => {
-    e.preventDefault();
-
     const formData = new FormData();
     // Assign state to formData
     Object.keys(form).map((key) => formData.append(key, form[key]));
     // Add this because laravel doesn't get form with put request!!
     formData.append("_method", "PUT");
-
+    // Dispatch action for updating user profile
     dispatch(updateUserProfile(formData));
   };
 

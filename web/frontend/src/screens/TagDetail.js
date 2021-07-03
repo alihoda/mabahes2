@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Header, Segment } from "semantic-ui-react";
 
-import { getTagInfo } from "../actions/tagActions";
 import Product from "../components/Product";
+import { getTagInfo } from "../actions/tagActions";
 
 function TagDetail({ match }) {
   const dispatch = useDispatch();
+  // Get requested tag from tagDetail state
   const { tag } = useSelector((state) => state.tagDetail);
 
   useEffect(() => {

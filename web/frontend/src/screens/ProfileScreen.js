@@ -12,39 +12,54 @@ import { USER_DELETE_PROFILE_RESET } from "../constants/userConstants";
 function ProfileScreen({ match, history }) {
   const dispatch = useDispatch();
 
-  const [open, setOpen] = useState(false);
-
+  // Store modal status (opened or not)
+  const [openModal, setOpenModal] = useState(false);
+  // Get current logged in user from state
   const { userInfo } = useSelector((state) => state.userLogin);
+  // Get requested user profile from state (it fills with getUserDetail action)
   const { error, user } = useSelector((state) => state.userDetail);
+  // State for store product delete action
   const { error: productDelError, success: productSuccess } = useSelector(
     (state) => state.productDelete
   );
+  // State for store user delete action
   const { error: userDelError, success: userSuccess } = useSelector(
     (state) => state.userDeleteProfile
   );
 
   useEffect(() => {
+    // Dispatch requested user info and store it in userDetail state
     dispatch(getUserDetail(match.params.id));
-
+    // Redirect to user profile screen if product deleted successfully
     if (productSuccess) {
       dispatch({ type: PRODUCT_DELETE_RESET });
       history.push(`/user/${match.params.id}`);
     }
+    // Redirect to home screen if user deleted successfully
     if (userSuccess) {
       dispatch({ type: USER_DELETE_PROFILE_RESET });
       history.push("/");
     }
   }, [dispatch, history, match, productSuccess, userSuccess]);
 
+  /**
+   * Render modal for user delete profile
+   * @returns Modal
+   */
   const modalRender = () => {
     return (
-      <Modal size="small" open={open} onClose={() => setOpen(false)} onOpen={() => setOpen(true)}>
+      <Modal
+        size="small"
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onOpen={() => setOpenModal(true)}
+      >
         <Header icon="warning sign" content="Are You Sure?" />
         <Modal.Content>
           <p>The user and all its products will be deleted. Sure about that?</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button color="red" onClick={() => setOpen(false)}>
+          <Button color="red" onClick={() => setOpenModal(false)}>
             <Icon name="remove" /> No
           </Button>
           <Button color="green" onClick={profileDeleteHandler}>
@@ -59,7 +74,7 @@ function ProfileScreen({ match, history }) {
    * Handler for delete button
    */
   const profileDeleteHandler = () => {
-    setOpen(false);
+    setOpenModal(false);
     dispatch(userDeleteProfile(userInfo.id));
   };
 
@@ -88,7 +103,7 @@ function ProfileScreen({ match, history }) {
             content="Delete Profile"
             icon="trash"
             labelPosition="left"
-            onClick={() => setOpen(true)}
+            onClick={() => setOpenModal(true)}
           />
           {modalRender()}
         </Item.Extra>

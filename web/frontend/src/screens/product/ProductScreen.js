@@ -7,9 +7,11 @@ import Product from "../../components/Product";
 
 function ProductScreen({ match }) {
   const dispatch = useDispatch();
-  const productDetails = useSelector((state) => state.productDetails);
-  const { product } = productDetails;
+  // Get requested product from its state
+  const { product } = useSelector((state) => state.productDetails);
 
+  // Get requested product from productDetail action
+  // and store it in its state (productDetails)
   useEffect(() => {
     dispatch(productDetail(match.params.id));
   }, [dispatch, match]);
